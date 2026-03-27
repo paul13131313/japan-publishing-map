@@ -79,24 +79,23 @@ async function getCategoryStats(year: number, month: number) {
 }
 
 async function getMonthlyTrend() {
-  // booksテーブルから集計
-  const { data: bookData } = await supabase
-    .from('books')
-    .select('issued_year, issued_month, ndc_major')
-    .not('issued_year', 'is', null)
-    .not('issued_month', 'is', null)
-    .not('ndc_major', 'is', null);
+  // monthly_statsテーブルから取得（集計済みデータ）
+  const { data: statsData } = await supabase
+    .from('monthly_stats')
+    .select('year, month, ndc_major, count')
+    .order('year', { ascending: true })
+    .order('month', { ascending: true });
 
-  if (!bookData || bookData.length === 0) return [];
+  if (!statsData || statsData.length === 0) return [];
 
+  // 月ごとにグループ化
   const monthMap = new Map<string, Record<string, number>>();
-  for (const book of bookData) {
-    const key = `${book.issued_year}-${String(book.issued_month).padStart(2, '0')}`;
+  for (const row of statsData) {
+    const key = `${row.year}-${String(row.month).padStart(2, '0')}`;
     if (!monthMap.has(key)) {
       monthMap.set(key, {});
     }
-    const ndcKey = `ndc_${book.ndc_major}`;
-    monthMap.get(key)![ndcKey] = (monthMap.get(key)![ndcKey] ?? 0) + 1;
+    monthMap.get(key)![`ndc_${row.ndc_major}`] = row.count;
   }
 
   return Array.from(monthMap.entries())
