@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a0f;
+  --foreground: #e5e5e5;
+  --card-bg: #141419;
+  --card-border: #1e1e2a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-noto-sans);
+  --font-serif: var(--font-noto-serif);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* カスタムスクロールバー */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+/* 横スクロールコンテナ */
+.scroll-container {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-container > * {
+  scroll-snap-align: start;
+}
+
+/* Recharts カスタム */
+.recharts-text {
+  fill: #999 !important;
+  font-size: 12px;
+}
